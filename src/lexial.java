@@ -20,15 +20,18 @@ public class lexial {
         }
     }*/
 
+
+
     public static void lexial(File[] pList){
-        int i,j;
+        int i;
         for (i = 0; i < (pList.length - 1); i++){
             ArrayList<String> release1 = tools.findFile(pList[i], new ArrayList<String>());
             ArrayList<String> release2 = tools.findFile(pList[i+1], new ArrayList<String>());
             version = tools.genVersion(pList[i], pList[i+1]);
             rFolder = new File("D:\\Workshop\\876\\lexial_Result\\" + version);
             rFolder.mkdirs();
-            diff(release1, release2);
+            Runnable r = ()-> diff(release1, release2);
+            new Thread(r).start();
         }
     }
 
@@ -38,11 +41,12 @@ public class lexial {
             boolean cond = f1.isFile();
             for (String pathf2 : v2) {
                 File f2 = new File(pathf2);
-                if (f1.getName() == f2.getName() && cond == f2.isFile())
+                if (f1.getName().equals(f2.getName()) && (cond == f2.isFile())){
                     if (!cond)
                         diff(tools.findFile(f1), tools.findFile(f2));
                     else
                         diff(f1, f2);
+                }
             }
         }
     }
@@ -76,7 +80,7 @@ public class lexial {
                         count2++;
                     }
                 }
-                System.out.print("Constructing Img for " + f1.getAbsolutePath() + "\n");
+                //System.out.print("Constructing Img for " + f1.getAbsolutePath() + "\n");
                 tools.genChart(xData, yData, f1, version, rFolder.toString());
             } catch (IOException e) {
                 e.printStackTrace();
