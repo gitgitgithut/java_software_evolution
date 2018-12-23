@@ -3,11 +3,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class lexial {
-    private static String version;
-    private static File rFolder;
-
     /*public static void lexial(File[] pList){
         int i,j;
         for (i = 0; i < (pList.length - 1); i++){
@@ -25,17 +21,17 @@ public class lexial {
     public static void lexial(File[] pList){
         int i;
         for (i = 0; i < (pList.length - 1); i++){
-            ArrayList<String> release1 = tools.findFile(pList[i], new ArrayList<String>());
-            ArrayList<String> release2 = tools.findFile(pList[i+1], new ArrayList<String>());
-            version = tools.genVersion(pList[i], pList[i+1]);
-            rFolder = new File("D:\\Workshop\\876\\lexial_Result\\" + version);
+            ArrayList<String> release1 = tools.findFile(pList[i], new ArrayList<>());
+            ArrayList<String> release2 = tools.findFile(pList[i+1], new ArrayList<>());
+            String version = tools.genVersion(pList[i], pList[i+1]);
+            File rFolder = new File("D:\\Files\\WorkSpace\\Java\\java_software_evolution\\lexial_result\\" + version);
             rFolder.mkdirs();
-            Runnable r = ()-> diff(release1, release2);
+            Runnable r = ()-> diff(release1, release2, version, rFolder);
             new Thread(r).start();
         }
     }
 
-    public static void diff(ArrayList<String> v1, ArrayList<String> v2){
+    public static void diff(ArrayList<String> v1, ArrayList<String> v2, String version, File rFolder){
         for (String pathf1: v1) {
             File f1 = new File(pathf1);
             boolean cond = f1.isFile();
@@ -43,15 +39,17 @@ public class lexial {
                 File f2 = new File(pathf2);
                 if (f1.getName().equals(f2.getName()) && (cond == f2.isFile())){
                     if (!cond)
-                        diff(tools.findFile(f1), tools.findFile(f2));
-                    else
-                        diff(f1, f2);
+                        diff(tools.findFile(f1), tools.findFile(f2), version, rFolder);
+                    else{
+                        diff(f1, f2, version, rFolder);
+                        break;
+                    }
                 }
             }
         }
     }
 
-    public static void diff(File f1, File f2){
+    public static void diff(File f1, File f2, String version, File rFolder){
         String f1Name = f1.getName();
         String f2Name = f2.getName();
         String[] f1typel = f1Name.split("\\.+");
@@ -60,8 +58,8 @@ public class lexial {
         String f1type = f1typel[f1typel.length-1];
         if (f1type.equals("md") || f1type.contains("txt"))
             return;
-        List<Double> xData = new LinkedList<Double>();
-        List<Double> yData = new LinkedList<Double>();
+        List<Double> xData = new LinkedList<>();
+        List<Double> yData = new LinkedList<>();
         if (f1Name.equals(f2Name)){
             try {
                 BufferedReader br1 = new BufferedReader(new FileReader(f1));
@@ -69,18 +67,20 @@ public class lexial {
                 double count1 = 0;
                 double count2;
                 while ((l1 = br1.readLine()) != null){
-                    count1++;
-                    count2 = 1;
-                    BufferedReader br2 = new BufferedReader(new FileReader(f2));
-                    while ((l2 = br2.readLine()) != null){
-                        if (l1.equals(l2)){
-                            xData.add(count1);
-                            yData.add(count2);
+                    if (!l1.equals("\n")){
+                        count1++;
+                        count2 = 1;
+                        BufferedReader br2 = new BufferedReader(new FileReader(f2));
+                        while ((l2 = br2.readLine()) != null){
+                            if (l1.equals(l2)){
+                                xData.add(count1);
+                                yData.add(count2);
+                            }
+                            count2++;
                         }
-                        count2++;
                     }
                 }
-                //System.out.print("Constructing Img for " + f1.getAbsolutePath() + "\n");
+                System.out.print("Constructing Img for " + f1.getAbsolutePath() + "\n");
                 tools.genChart(xData, yData, f1, version, rFolder.toString());
             } catch (IOException e) {
                 e.printStackTrace();
