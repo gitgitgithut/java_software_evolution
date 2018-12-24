@@ -21,8 +21,8 @@ public class lexial {
     public static void lexial(File[] pList){
         int i;
         for (i = 0; i < (pList.length - 1); i++){
-            ArrayList<String> release1 = tools.findFile(pList[i], new ArrayList<>());
-            ArrayList<String> release2 = tools.findFile(pList[i+1], new ArrayList<>());
+            ArrayList<String> release1 = tools.findFile(pList[i]);
+            ArrayList<String> release2 = tools.findFile(pList[i+1]);
             String version = tools.genVersion(pList[i], pList[i+1]);
             File rFolder = new File("D:\\Files\\WorkSpace\\Java\\java_software_evolution\\lexial_result\\" + version);
             rFolder.mkdirs();
@@ -31,7 +31,7 @@ public class lexial {
         }
     }
 
-    public static void diff(ArrayList<String> v1, ArrayList<String> v2, String version, File rFolder){
+    private static void diff(ArrayList<String> v1, ArrayList<String> v2, String version, File rFolder){
         for (String pathf1: v1) {
             File f1 = new File(pathf1);
             boolean cond = f1.isFile();
@@ -49,7 +49,7 @@ public class lexial {
         }
     }
 
-    public static void diff(File f1, File f2, String version, File rFolder){
+    private static void diff(File f1, File f2, String version, File rFolder){
         String f1Name = f1.getName();
         String f2Name = f2.getName();
         String[] f1typel = f1Name.split("\\.+");
