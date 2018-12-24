@@ -8,7 +8,8 @@ public class main {
         File[] pList = (new File(args[0])).listFiles();
         tools.sortVer(pList);
         //lexial.lexial(pList);
-        ast.main(pList);
+        ast_test.main(pList);
+
     }
 }
 
